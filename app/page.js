@@ -1,20 +1,34 @@
 "use client";
 import { currencyFormatter } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import ExpenseCategoryItem from "@/components/ExpenseCategoryItem";
 import Modal from "@/components/Modal";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Doughnut } from "react-chartjs-2";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+// Firebase
+import { db } from "@/lib/firebase";
+import {
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    deleteDoc,
+} from "firebase/firestore";
+
+// Icons
+import { FaRegTrashAlt } from "react-icons/fa";
+
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const DUMMY_DATA = [
     {
         id: 1,
         title: "Entertainment",
-        color: "#078",
+        color: "#36A2EB",
         total: 500,
     },
     {
@@ -26,13 +40,13 @@ const DUMMY_DATA = [
     {
         id: 3,
         title: "Fuel",
-        color: "#000",
+        color: "#FF6384",
         total: 1200,
     },
     {
         id: 4,
         title: "Movies",
-        color: "#015",
+        color: "#FFCE56",
         total: 800,
     },
     {
@@ -44,13 +58,145 @@ const DUMMY_DATA = [
 ];
 
 export default function Home() {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [income, setIncome] = useState([]);
+
+    const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
+    const amountRef = useRef();
+    const descriptionRef = useRef();
+
+    // Handler Functions
+    const addIncomeHandler = async (e) => {
+        e.preventDefault();
+
+        const newIncome = {
+            amount: amountRef.current.value,
+            description: descriptionRef.current.value,
+            createdAt: new Date(),
+        };
+
+        const collectionRef = collection(db, "income");
+
+        try {
+            const docSnap = await addDoc(collectionRef, newIncome);
+
+            // Update state
+            setIncome((prevState) => {
+                return [
+                    ...prevState,
+                    {
+                        id: docSnap.id,
+                        ...newIncome,
+                    },
+                ];
+            });
+
+            descriptionRef.current.value = "";
+            amountRef.current.value = "";
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    const deleteIncomeEntryHandler = async (incomeId) => {
+        const docRef = doc(db, "income", incomeId);
+        try {
+            await deleteDoc(docRef);
+            setIncome((prevState) => {
+                return prevState.filter((i) => i.id !== incomeId);
+            });
+            // Update State
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    useEffect(() => {
+        const getIncomeData = async () => {
+            const collectionRef = collection(db, "income");
+            const docsSnap = await getDocs(collectionRef);
+
+            const data = docsSnap.docs.map((doc) => {
+                return {
+                    id: doc.id,
+                    ...doc.data(),
+                    createdAt: new Date(doc.data().createdAt.toMillis()),
+                };
+            });
+
+            setIncome(data);
+        };
+
+        getIncomeData();
+    }, []);
 
     return (
         <>
-            {/* Modal */}
-            <Modal show={modalIsOpen} onClose={setModalIsOpen}>
-                <h3>Hello World</h3>
+            {/* Add Income Modal */}
+            <Modal show={showAddIncomeModal} onClose={setShowAddIncomeModal}>
+                <form
+                    onSubmit={addIncomeHandler}
+                    className="flex flex-col gap-4"
+                >
+                    <div className="input-group">
+                        <label htmlFor="amount">Income Amount</label>
+                        <input
+                            type="number"
+                            name="amount"
+                            ref={amountRef}
+                            min={1}
+                            step={1}
+                            placeholder="Enter income amount"
+                            required
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label htmlFor="description">Description</label>
+                        <input
+                            name="description"
+                            ref={descriptionRef}
+                            type="text"
+                            placeholder="Enter income description"
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className="btn btn-primary">
+                        Add entry
+                    </button>
+                </form>
+
+                <div className="flex flex-col gap-4 mt-6">
+                    <h3 className="text-2xl font-bold">Income History</h3>
+
+                    {income.map((i) => {
+                        return (
+                            <div
+                                className="flex justify-between item-center"
+                                key={i.id}
+                            >
+                                <div>
+                                    <p className="font-semibold">
+                                        {i.description}
+                                    </p>
+                                    <small className="text-xs">
+                                        {i.createdAt.toISOString()}
+                                    </small>
+                                </div>
+                                <p className="flex items-center gap-2">
+                                    {currencyFormatter(i.amount)}
+                                    <button
+                                        onClick={() => {
+                                            deleteIncomeEntryHandler(i.id);
+                                        }}
+                                    >
+                                        <FaRegTrashAlt />
+                                    </button>
+                                </p>
+                            </div>
+                        );
+                    })}
+                </div>
             </Modal>
             <main className="container max-w-2xl px-6 mx-auto">
                 <section className="py-3">
@@ -61,15 +207,19 @@ export default function Home() {
                 </section>
 
                 <section className="flex items-center gap-2 py-3">
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => {
-                            setModalIsOpen(true);
-                        }}
-                    >
+                    <button className="btn btn-primary" onClick={() => {}}>
                         + Expenses
                     </button>
-                    <button className="btn btn-primary-outline">
+                    <button
+                        className="btn btn-primary-outline"
+                        onClick={() => {
+                            window.scrollTo({
+                                top: 0,
+                                behavior: "smooth",
+                            });
+                            setShowAddIncomeModal(true);
+                        }}
+                    >
                         + Income
                     </button>
                 </section>
@@ -81,6 +231,7 @@ export default function Home() {
                         {DUMMY_DATA.map((expense) => {
                             return (
                                 <ExpenseCategoryItem
+                                    key={expense.id}
                                     color={expense.color}
                                     title={expense.title}
                                     total={expense.total}
@@ -108,10 +259,32 @@ export default function Home() {
                                         backgroundColor: DUMMY_DATA.map(
                                             (expense) => expense.color,
                                         ),
-                                        borderColor: ["#ffff"],
+                                        borderColor: ["#dddd"],
                                         borderWidth: 3,
                                     },
                                 ],
+                            }}
+                            options={{
+                                plugins: {
+                                    datalabels: {
+                                        formatter: (value, context) => {
+                                            const total =
+                                                context.dataset.data.reduce(
+                                                    (acc, val) => acc + val,
+                                                    0,
+                                                );
+                                            const percentage = (
+                                                (value / total) *
+                                                100
+                                            ).toFixed(2);
+                                            return `${percentage}%`;
+                                        },
+                                        color: "#fff",
+                                        font: {
+                                            weight: "bold",
+                                        },
+                                    },
+                                },
                             }}
                         />
                     </div>

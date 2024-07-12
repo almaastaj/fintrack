@@ -4,16 +4,19 @@
 
 @layer base {
     body {
-        @apply bg-teal-50 text-blue-950 relative;
+        @apply relative bg-teal-50 text-blue-950;
     }
     button {
         @apply transition-all duration-100 hover:scale-110;
+    }
+    input {
+        @apply px-4 py-2 bg-teal-100 rounded-xl;
     }
 }
 
 @layer utilities {
     .btn {
-        @apply px-4 py-2 text-sm capitalize rounded-xl;
+        @apply self-start px-4 py-2 text-sm capitalize rounded-xl;
     }
 
     .btn-primary {
@@ -26,5 +29,15 @@
 
     .btn-danger {
         @apply text-white bg-red-600 border border-red-600;
+    }
+    .input-group {
+        @apply flex flex-col gap-4;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, and Opera */
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+        scrollbar-width: none; /* Firefox */
     }
 }
