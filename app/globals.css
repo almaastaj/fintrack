@@ -4,7 +4,7 @@
 
 @layer base {
     body {
-        @apply bg-teal-50 text-blue-950;
+        @apply bg-teal-50 text-blue-950 relative;
     }
     button {
         @apply transition-all duration-100 hover:scale-110;
