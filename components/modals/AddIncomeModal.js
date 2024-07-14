@@ -1,6 +1,5 @@
 import { useRef, useEffect, useContext } from "react";
 import { currencyFormatter } from "@/lib/utils";
-
 import { financeContext } from "@/lib/store/finance-context";
 
 // Icons
@@ -19,7 +18,7 @@ function AddIncomeModal({ show, onClose }) {
         e.preventDefault();
 
         const newIncome = {
-            amount: amountRef.current.value,
+            amount: +amountRef.current.value,
             description: descriptionRef.current.value,
             createdAt: new Date(),
         };
