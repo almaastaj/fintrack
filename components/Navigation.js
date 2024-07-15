@@ -4,7 +4,7 @@ import { ImStatsBars } from "react-icons/im";
 
 function Nav() {
     const { user, loading, logout } = useContext(authContext);
-    console.log(user);
+
     return (
         <header className="container bg-teal-300 max-w-7xl px-6 py-6 mx-auto">
             <div className="flex items-center justify-between">
@@ -15,16 +15,24 @@ function Nav() {
                         <div className="h-[40px] w-[40px] rounded-full overflow-hidden">
                             <img
                                 className="object-cover w-full h-full"
-                                src={user.photoURL}
+                                src={
+                                    user.photoURL
+                                        ? user.photoURL
+                                        : "https://thispersondoesnotexist.com"
+                                }
                                 // src="https://thispersondoesnotexist.com"
-                                alt={user.displayName}
+                                alt={
+                                    user.displayName
+                                        ? user.displayName
+                                        : "Guest"
+                                }
                                 referrerPolicy="no-referrer"
                             />
                         </div>
 
                         {/* name */}
                         <small className="text-lg">
-                            Hi, {user.displayName}!
+                            Hi, {user.displayName ? user.displayName : "Guest"}!
                         </small>
                     </div>
                 )}
@@ -32,7 +40,9 @@ function Nav() {
                 {user && !loading && (
                     <nav className="flex items-center gap-4">
                         <div>
-                            <ImStatsBars className="text-2xl" />
+                            <a href="#stats">
+                                <ImStatsBars className="text-2xl" />
+                            </a>
                         </div>
                         <div>
                             <button onClick={logout} className="btn btn-danger">

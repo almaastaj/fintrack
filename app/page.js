@@ -15,39 +15,6 @@ import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-const DUMMY_DATA = [
-    {
-        id: 1,
-        title: "Entertainment",
-        color: "#36A2EB",
-        total: 500,
-    },
-    {
-        id: 2,
-        title: "Food",
-        color: "#009",
-        total: 200,
-    },
-    {
-        id: 3,
-        title: "Fuel",
-        color: "#FF6384",
-        total: 1200,
-    },
-    {
-        id: 4,
-        title: "Movies",
-        color: "#FFCE56",
-        total: 800,
-    },
-    {
-        id: 5,
-        title: "Holiday",
-        color: "#150",
-        total: 2000,
-    },
-];
-
 export default function Home() {
     const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
     const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
@@ -55,7 +22,7 @@ export default function Home() {
 
     const { expenses, income } = useContext(financeContext);
     const { user } = useContext(authContext);
-    console.log(user);
+
     useEffect(() => {
         const newBalance =
             income.reduce((total, i) => {
@@ -97,6 +64,10 @@ export default function Home() {
                 <section className="flex items-center gap-2 py-3">
                     <button
                         onClick={() => {
+                            window.scrollTo({
+                                top: 0,
+                                behavior: "smooth",
+                            });
                             setShowAddExpenseModal(true);
                         }}
                         className="btn btn-primary"
@@ -133,9 +104,10 @@ export default function Home() {
                 </section>
 
                 {/* Chart Section */}
-                <section className="py-6">
-                    <h3 className="text-2xl">Stats</h3>
-                    <div className="w-1/2 mx-auto">
+                <section className="py-4">
+                    <a id="stats" />
+                    <h3 className="text-2xl">Stats: Expense Breakdown</h3>
+                    <div className="w-2/3 mx-auto">
                         <Doughnut
                             data={{
                                 labels: expenses.map(

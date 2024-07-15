@@ -5,6 +5,7 @@ import { financeContext } from "@/lib/store/finance-context";
 
 import { v4 as uuidv4 } from "uuid";
 import Modal from "@/components/Modal";
+import { toast } from "react-toastify";
 
 function AddExpensesModal({ show, onClose }) {
     const [expenseAmount, setExpenseAmount] = useState("");
@@ -38,13 +39,12 @@ function AddExpensesModal({ show, onClose }) {
 
         try {
             await addExpenseItem(selectedCategory, newExpense);
-
-            console.log(newExpense);
             setExpenseAmount("");
             setSelectedCategory(null);
             onClose();
+            toast.success("Expense Item Added!");
         } catch (error) {
-            console.log(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -55,8 +55,9 @@ function AddExpensesModal({ show, onClose }) {
         try {
             await addCategory({ title, color, total: 0 });
             setShowAddExpense(false);
+            toast.success("Category created!");
         } catch (error) {
-            console.log(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -66,8 +67,8 @@ function AddExpensesModal({ show, onClose }) {
                 <label>Enter an amount..</label>
                 <input
                     type="number"
-                    min={0.01}
-                    step={0.01}
+                    min={1}
+                    step={1}
                     placeholder="Enter expense amount"
                     value={expenseAmount}
                     onChange={(e) => {
@@ -78,7 +79,7 @@ function AddExpensesModal({ show, onClose }) {
 
             {/* Expense Categories */}
             {expenseAmount > 0 && (
-                <div className="flex flex-col gap-4 mt-6">
+                <div className="flex flex-col gap-2 mt-2">
                     <div className="flex items-center justify-between">
                         <h3 className="text-2xl capitalize">
                             Select expense category
@@ -139,7 +140,7 @@ function AddExpensesModal({ show, onClose }) {
                                                 ? "1px 1px 4px"
                                                 : "none",
                                     }}
-                                    className="flex items-center justify-between px-4 py-4 bg-teal-300 rounded-3xl"
+                                    className="flex items-center justify-between px-2 py-2 bg-teal-300 rounded-3xl"
                                 >
                                     <div className="flex items-center gap-2">
                                         {/* Colored circle */}

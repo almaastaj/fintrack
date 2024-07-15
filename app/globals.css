@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+    html {
+        scroll-behavior: smooth;
+    }
     body {
         @apply relative bg-teal-50 text-blue-950;
     }
