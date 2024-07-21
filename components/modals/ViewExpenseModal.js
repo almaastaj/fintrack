@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { financeContext } from "@/lib/store/finance-context";
 
 import Modal from "@/components/Modal";
-import { currencyFormatter } from "@/lib/utils";
+import { currencyFormatter, dateFormatter } from "@/lib/utils";
 
 import { FaRegTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -60,10 +60,14 @@ function ViewExpenseModal({ show, onClose, expense }) {
                         >
                             <small>
                                 {item.createdAt.toMillis
-                                    ? new Date(
-                                          item.createdAt.toMillis(),
-                                      ).toISOString()
-                                    : item.createdAt.toISOString()}
+                                    ? dateFormatter(
+                                          new Date(
+                                              item.createdAt.toMillis(),
+                                          ).toISOString(),
+                                      )
+                                    : dateFormatter(
+                                          item.createdAt.toISOString(),
+                                      )}
                             </small>
                             <p className="flex items-center gap-2">
                                 {currencyFormatter(item.amount)}

@@ -1,5 +1,5 @@
 import { useRef, useEffect, useContext } from "react";
-import { currencyFormatter } from "@/lib/utils";
+import { currencyFormatter, dateFormatter } from "@/lib/utils";
 import { financeContext } from "@/lib/store/finance-context";
 import { authContext } from "@/lib/store/auth-context";
 
@@ -90,7 +90,7 @@ function AddIncomeModal({ show, onClose }) {
                             <div>
                                 <p className="font-semibold">{i.description}</p>
                                 <small className="text-xs">
-                                    {i.createdAt.toISOString()}
+                                    {dateFormatter(i.createdAt.toISOString())}
                                 </small>
                             </div>
                             <p className="flex items-center gap-2">
