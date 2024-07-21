@@ -16,14 +16,16 @@ import { Doughnut } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 export default function Home() {
+    // State variables for managing modal visibility and user balance
     const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
     const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
     const [balance, setBalance] = useState(0);
-
-    const { expenses, income } = useContext(financeContext);
-    const { user } = useContext(authContext);
+    // Destructure necessary data from context
+    const { expenses, income } = useContext(financeContext); // Get expenses and income data from financeContext
+    const { user } = useContext(authContext); // Get the current user from authContext
 
     useEffect(() => {
+        // Calculate the new balance based on income and expenses
         const newBalance =
             income.reduce((total, i) => {
                 return total + i.amount;
@@ -31,11 +33,12 @@ export default function Home() {
             expenses.reduce((total, e) => {
                 return total + e.total;
             }, 0);
-
+        // Update the balance state
         setBalance(newBalance);
-    }, [expenses, income]);
+    }, [expenses, income]); // Recalculate balance whenever expenses or income change
 
     if (!user) {
+        // If the user is not logged in, show the SignIn component
         return <SignIn />;
     }
 

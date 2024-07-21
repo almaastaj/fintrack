@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 import { authContext } from "@/lib/store/auth-context";
 import { MdPersonOutline } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
-import Image from "next/image";
 
 function SignIn() {
     const { googleLoginHandler, signInAsGuestHandler } =
@@ -20,7 +19,6 @@ function SignIn() {
                 <div className="h-52">
                     <img
                         className="object-cover w-full h-full"
-                        // src="https://images.pexels.com/photos/4386431/pexels-photo-4386431.jpeg"
                         src="/finance-definition.png"
                     />
                 </div>

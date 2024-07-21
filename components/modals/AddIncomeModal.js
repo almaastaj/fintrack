@@ -10,16 +10,20 @@ import Modal from "@/components/Modal";
 import { toast } from "react-toastify";
 
 function AddIncomeModal({ show, onClose }) {
+    // References for form input elements
     const amountRef = useRef();
     const descriptionRef = useRef();
+    // Retrieve context values for income operations and user authentication
     const { income, addIncomeItem, removeIncomeItem } =
         useContext(financeContext);
     const { user } = useContext(authContext);
 
     // Handler Functions
+    // Handler function to add new income entry
     const addIncomeHandler = async (e) => {
         e.preventDefault();
 
+        // Create a new income object with user input and current date
         const newIncome = {
             amount: +amountRef.current.value,
             description: descriptionRef.current.value,
@@ -28,7 +32,9 @@ function AddIncomeModal({ show, onClose }) {
         };
 
         try {
+            // Attempt to add the new income item
             await addIncomeItem(newIncome);
+            // Clear the form inputs after successful addition
             descriptionRef.current.value = "";
             amountRef.current.value = "";
             toast.success("Income added successfully!");
@@ -37,8 +43,10 @@ function AddIncomeModal({ show, onClose }) {
         }
     };
 
+    // Handler function to delete an income entry
     const deleteIncomeEntryHandler = async (incomeId) => {
         try {
+            // Attempt to remove the income item by its ID
             await removeIncomeItem(incomeId);
             toast.success("Income deleted successfully.");
         } catch (error) {

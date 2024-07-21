@@ -8,21 +8,23 @@ import Modal from "@/components/Modal";
 import { toast } from "react-toastify";
 
 function AddExpensesModal({ show, onClose }) {
+    // State variables for managing expense amount, selected category, and visibility of add expense form
     const [expenseAmount, setExpenseAmount] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [showAddExpense, setShowAddExpense] = useState(false);
-
+    // Destructure necessary functions and state from financeContext
     const { expenses, addExpenseItem, addCategory } =
         useContext(financeContext);
-
+    // Refs for title and color input fields
     const titleRef = useRef();
     const colorRef = useRef();
-
+    // Handler function to add a new expense item to the selected category
     const addExpenseItemHandler = async () => {
+        // Find the selected expense category
         const expense = expenses.find((e) => {
             return e.id === selectedCategory;
         });
-
+        // Create a new expense object with updated items and total
         const newExpense = {
             color: expense.color,
             title: expense.title,
@@ -38,23 +40,25 @@ function AddExpensesModal({ show, onClose }) {
         };
 
         try {
+            // Attempt to add the new expense item to the selected category
             await addExpenseItem(selectedCategory, newExpense);
-            setExpenseAmount("");
-            setSelectedCategory(null);
-            onClose();
+            setExpenseAmount(""); // Clear the expense amount input
+            setSelectedCategory(null); // Reset the selected category
+            onClose(); // Close the modal or form
             toast.success("Expense Item Added!");
         } catch (error) {
             toast.error(error.message);
         }
     };
-
+    // Handler function to add a new expense category
     const addCategoryHandler = async () => {
         const title = titleRef.current.value;
         const color = colorRef.current.value;
 
         try {
+            // Attempt to add the new category
             await addCategory({ title, color, total: 0 });
-            setShowAddExpense(false);
+            setShowAddExpense(false); // Hide the add expense form
             toast.success("Category created!");
         } catch (error) {
             toast.error(error.message);
