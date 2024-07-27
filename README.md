@@ -4,7 +4,8 @@ This repo contains the **source code** of an **Personal Finance Website** named 
 
 ## Demo Video
 
-![Demo Video](./FinTrackSnapshots/FinTrackDemo.gif)
+[![Demo Video](./FinTrackSnapshots/FinTrackDemo.gif)](https://github.com/user-attachments/assets/004bd51b-4847-4e4d-9e97-4436d174d99a
+)
 
 ## LoginPage
 
