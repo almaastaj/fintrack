@@ -2,6 +2,13 @@
 
 This repo contains the **source code** of an **Personal Finance Website** named [Fintrack](https://fintrack-eight.vercel.app/) which was created using **Next.Js** and **Firebase** for authentication and Data storage.
 
+## Demo Video
+
+<video width="320" height="240" controls>
+  <source src="./FinTrackSnapshots/FinTrackDemo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ## LoginPage
 
 ![Login Page](./FinTrackSnapshots/loginPage.jpg)
